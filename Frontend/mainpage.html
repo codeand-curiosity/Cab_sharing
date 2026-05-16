@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabify Main</title>
+    <style>
+        :root {
+            --bg: #0c1017;
+            --panel: #141a24;
+            --panel-soft: rgba(20, 26, 36, 0.9);
+            --line: #2a3546;
+            --text: #f4f7fb;
+            --muted: #9ca8ba;
+            --accent: #38bdf8;
+            --accent-strong: #0ea5e9;
+            --surface: #101722;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, #090d13 0%, var(--bg) 50%, #111827 100%);
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .page-background {
+            position: fixed;
+            inset: 0 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 500px;
+            z-index: -1;
+            overflow: hidden;
+            background: #0c1017;
+        }
+
+        .bg-photo {
+            min-width: 0;
+            min-height: 100%;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .bg-photo:first-child {
+            background-image: url("https://images.unsplash.com/photo-1608213189166-b099855aee3c?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmhvcGFsfGVufDB8fDB8fHww");
+        }
+
+        .bg-photo:last-child {
+            background-image: url("https://plus.unsplash.com/premium_photo-1661925018295-c4a5a3988250?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmhvcGFsfGVufDB8fDB8fHww");
+        }
+
+        .page-background::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(8, 12, 18, 0.78), rgba(8, 12, 18, 0.24)),
+                linear-gradient(180deg, transparent 45%, #0c1017 100%);
+        }
+
+        .topbar {
+            display: grid;
+            grid-template-columns: auto minmax(180px, 1fr) auto;
+            align-items: center;
+            gap: 24px;
+            padding: 18px clamp(18px, 4vw, 48px);
+            background: rgba(12, 16, 23, 0.58);
+            backdrop-filter: blur(16px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 14px;
+            color: #06121d;
+            background: var(--accent);
+        }
+
+        .brand-logo svg {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+
+        .brand-name {
+            display: grid;
+            gap: 2px;
+        }
+
+        .brand-name strong {
+            font-size: 1.22rem;
+            letter-spacing: 0;
+        }
+
+        .brand-name span {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 0;
+        }
+
+        .location svg {
+            width: 20px;
+            height: 20px;
+            flex: 0 0 auto;
+            color: var(--accent);
+        }
+
+        .location strong {
+            display: block;
+            overflow: hidden;
+            color: #dbe7f4;
+            font-size: 0.98rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .change-city {
+            margin-top: 3px;
+            padding: 0;
+            border: 0;
+            color: var(--accent);
+            background: none;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            min-width: 46px;
+            height: 46px;
+            display: inline-grid;
+            place-items: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+        }
+
+        .icon-btn svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .hero {
+            min-height: 315px;
+            display: flex;
+            align-items: flex-end;
+            padding: clamp(28px, 5vw, 56px) clamp(18px, 4vw, 48px);
+        }
+
+        .hero-content {
+            max-width: 720px;
+        }
+
+        .hero-content h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 5vw, 4.2rem);
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .hero-content p {
+            max-width: 38rem;
+            margin: 0;
+            color: #d7e1ee;
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .attribution {
+            margin-top: 14px;
+            color: rgba(244, 247, 251, 0.75);
+            font-size: 0.72rem;
+        }
+
+        .attribution a {
+            color: inherit;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 430px) minmax(0, 1fr);
+            gap: 22px;
+            padding: 0 clamp(18px, 4vw, 48px) 48px;
+        }
+
+        .panel {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            background: var(--panel-soft);
+            box-shadow: var(--shadow);
+        }
+
+        .ride-control {
+            padding: 22px;
+        }
+
+        .where-btn {
+            width: 100%;
+            min-height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 0;
+            border-radius: 10px;
+            color: #06121d;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.16)),
+                linear-gradient(135deg, rgba(56, 189, 248, 0.92), rgba(14, 165, 233, 0.78));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62), 0 16px 34px rgba(14, 165, 233, 0.24);
+            backdrop-filter: blur(14px);
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .where-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .ride-sections {
+            display: none;
+            margin-top: 20px;
+            gap: 18px;
+        }
+
+        .ride-sections.active {
+            display: grid;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .section-title h2,
+        .section-title h3 {
+            margin: 0;
+            font-size: 1.08rem;
+            letter-spacing: 0;
+        }
+
+        .section-title span {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .host-card,
+        .ride-card,
+        .upcoming-empty {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface);
+        }
+
+        .host-card {
+            padding: 18px;
+        }
+
+        .host-card p {
+            margin: 8px 0 16px;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .secondary-btn {
+            min-height: 44px;
+            padding: 0 16px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 8px;
+            color: var(--text);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            backdrop-filter: blur(12px);
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .ride-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .ride-card {
+            display: grid;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .ride-main {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .ride-main strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .ride-main span,
+        .ride-meta {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .ride-price {
+            color: var(--accent);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .ride-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .content-side {
+            display: grid;
+            gap: 22px;
+            align-content: start;
+        }
+
+        .map-panel {
+            min-height: 440px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(14px);
+        }
+
+        #cabifyMap {
+            width: 100%;
+            height: 100%;
+            min-height: 440px;
+            opacity: 0.82;
+        }
+
+        .map-placeholder {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 26px;
+            color: #d7e1ee;
+            text-align: center;
+            background:
+                linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+                rgba(12, 16, 23, 0.48);
+            background-size: 44px 44px;
+            pointer-events: none;
+        }
+
+        .map-placeholder strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 1.15rem;
+        }
+
+        .map-placeholder span {
+            display: block;
+            max-width: 24rem;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .map-panel.ready .map-placeholder {
+            display: none;
+        }
+
+        .upcoming-rides {
+            margin-top: 22px;
+            padding-top: 22px;
+            border-top: 1px solid var(--line);
+        }
+
+        .upcoming-empty {
+            display: grid;
+            place-items: center;
+            min-height: 188px;
+            padding: 24px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.55;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .stat-card {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: rgba(16, 23, 34, 0.9);
+        }
+
+        .stat-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.4rem;
+        }
+
+        .stat-card span {
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        @media (max-width: 920px) {
+            .topbar {
+                grid-template-columns: 1fr auto;
+            }
+
+            .location {
+                grid-column: 1 / -1;
+                order: 3;
+            }
+
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .map-panel,
+            #cabifyMap {
+                min-height: 340px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .topbar {
+                gap: 14px;
+                padding: 14px 16px;
+            }
+
+            .brand-logo {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+            }
+
+            .brand-name span {
+                display: none;
+            }
+
+            .top-actions {
+                gap: 8px;
+            }
+
+            .icon-btn {
+                min-width: 40px;
+                height: 40px;
+            }
+
+            .page-background {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+                height: 300px;
+            }
+
+            .hero {
+                min-height: 300px;
+                padding: 28px 16px;
+            }
+
+            .main-layout {
+                padding: 0 16px 34px;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .map-panel,
+            #cabifyMap {
+                min-height: 300px;
+            }
+
+            .ride-control {
+                padding: 18px;
+            }
+
+            .upcoming-rides {
+                margin-top: 18px;
+                padding: 18px 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-background" aria-hidden="true">
+        <div class="bg-photo"></div>
+        <div class="bg-photo"></div>
+    </div>
+
+    <header class="topbar">
+        <div class="brand" aria-label="Cabify">
+            <div class="brand-logo">
+                <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M16 29l5.1-12.2A8 8 0 0 1 28.5 12h7a8 8 0 0 1 7.4 4.8L48 29h3a5 5 0 0 1 5 5v12a3 3 0 0 1-3 3h-3.4a7 7 0 0 1-13.2 0h-8.8a7 7 0 0 1-13.2 0H11a3 3 0 0 1-3-3V34a5 5 0 0 1 5-5h3Zm6.5 0h19L38.8 20a4 4 0 0 0-3.8-2.8h-6a4 4 0 0 0-3.7 2.7L22.5 29ZM21 52a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm22 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                </svg>
+            </div>
+            <div class="brand-name">
+                <strong>Cabify</strong>
+                <span>Ride sharing made simple</span>
+            </div>
+        </div>
+
+        <div class="location" aria-label="Current location">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path fill="none" stroke="currentColor" stroke-width="2" d="M12 21s7-6.1 7-12A7 7 0 1 0 5 9c0 5.9 7 12 7 12Z"/>
+                <circle cx="12" cy="9" r="2.5" fill="currentColor"/>
+            </svg>
+            <div>
+                <strong>Kolkata, IN</strong>
+                <button class="change-city" type="button">Change city</button>
+            </div>
+        </div>
+
+        <nav class="top-actions" aria-label="Account actions">
+            <button class="icon-btn" type="button" aria-label="Profile">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M20 21a8 8 0 0 0-16 0"/>
+                    <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Notifications">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/>
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M10 21h4"/>
+                </svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Support">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M4 12a8 8 0 0 1 16 0v4a3 3 0 0 1-3 3h-2"/>
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M4 12v3a2 2 0 0 0 2 2h1v-7H6a2 2 0 0 0-2 2Zm16 0v3a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 2Z"/>
+                    <path fill="none" stroke="currentColor" stroke-width="2" d="M13 19h-2"/>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" aria-label="Bhopal featured location">
+            <div class="hero-content">
+                <h1>Move around Bhopal together</h1>
+                <p>Find shared rides near Upper Lake, host your own route, or join available trips from people going your way.</p>
+                <div class="attribution">
+                    Images: Bhopal city and
+                    <a href="https://commons.wikimedia.org/wiki/File:Upper_Lake,_Bhopal.jpg">Upper Lake</a>.
+                </div>
+            </div>
+        </section>
+
+        <section class="main-layout" aria-label="Ride dashboard">
+            <aside class="panel ride-control">
+                <button id="whereToGo" class="where-btn" type="button" aria-expanded="false">
+                    <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                        <path fill="currentColor" d="M16 29l5.1-12.2A8 8 0 0 1 28.5 12h7a8 8 0 0 1 7.4 4.8L48 29h3a5 5 0 0 1 5 5v12a3 3 0 0 1-3 3h-3.4a7 7 0 0 1-13.2 0h-8.8a7 7 0 0 1-13.2 0H11a3 3 0 0 1-3-3V34a5 5 0 0 1 5-5h3Zm6.5 0h19L38.8 20a4 4 0 0 0-3.8-2.8h-6a4 4 0 0 0-3.7 2.7L22.5 29Z"/>
+                    </svg>
+                    Where to go?
+                </button>
+
+                <div id="rideSections" class="ride-sections">
+                    <section>
+                        <div class="section-title">
+                            <h2>Be a host</h2>
+                            <span>Create route</span>
+                        </div>
+                        <div class="host-card">
+                            <strong>Going somewhere?</strong>
+                            <p>Publish your route, pickup point, empty seats, and expected time so other riders can join you.</p>
+                            <button class="secondary-btn" type="button">Host a ride</button>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="section-title">
+                            <h2>Join others rides</h2>
+                            <span>Available now</span>
+                        </div>
+                        <div class="ride-list">
+                            <article class="ride-card">
+                                <div class="ride-main">
+                                    <div>
+                                        <strong>Upper Lake to MP Nagar</strong>
+                                        <span>Hosted by Arjun</span>
+                                    </div>
+                                    <div class="ride-price">Rs 90</div>
+                                </div>
+                                <div class="ride-meta">
+                                    <span>Today, 6:30 PM</span>
+                                    <span>3 seats left</span>
+                                    <span>Pickup: Boat Club</span>
+                                </div>
+                            </article>
+
+                            <article class="ride-card">
+                                <div class="ride-main">
+                                    <div>
+                                        <strong>Indrapuri to New Market</strong>
+                                        <span>Hosted by Sana</span>
+                                    </div>
+                                    <div class="ride-price">Rs 70</div>
+                                </div>
+                                <div class="ride-meta">
+                                    <span>Today, 7:15 PM</span>
+                                    <span>2 seats left</span>
+                                    <span>Pickup: BHEL Gate</span>
+                                </div>
+                            </article>
+
+                            <article class="ride-card">
+                                <div class="ride-main">
+                                    <div>
+                                        <strong>Kolar Road to DB Mall</strong>
+                                        <span>Hosted by Nisha</span>
+                                    </div>
+                                    <div class="ride-price">Rs 80</div>
+                                </div>
+                                <div class="ride-meta">
+                                    <span>Tomorrow, 9:00 AM</span>
+                                    <span>4 seats left</span>
+                                    <span>Pickup: Danish Kunj</span>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="upcoming-rides">
+                    <div class="section-title">
+                        <h3>Upcoming rides</h3>
+                        <span>Updated later</span>
+                    </div>
+                    <div class="upcoming-empty">
+                        No rides yet. Your booked and hosted rides will appear here when they are updated.
+                    </div>
+                </section>
+            </aside>
+
+            <section class="content-side">
+                <section id="mapPanel" class="map-panel" aria-label="Nearby route map">
+                    <div id="cabifyMap"></div>
+                    <div id="mapPlaceholder" class="map-placeholder">
+                        <div>
+                            <strong>Map view</strong>
+                            <span>Add your Google Maps API key in the script to show nearby routes and pickup points here.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="overview-grid">
+                    <div class="stat-card">
+                        <strong>12</strong>
+                        <span>Nearby shared rides</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>4</strong>
+                        <span>Popular routes</span>
+                    </div>
+                    <div class="stat-card">
+                        <strong>24/7</strong>
+                        <span>Support ready</span>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const whereToGo = document.querySelector("#whereToGo");
+        const rideSections = document.querySelector("#rideSections");
+        const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+
+        whereToGo.addEventListener("click", () => {
+            const isOpen = rideSections.classList.toggle("active");
+            whereToGo.setAttribute("aria-expanded", String(isOpen));
+        });
+
+        window.initCabifyMap = function initCabifyMap() {
+            const mapPanel = document.querySelector("#mapPanel");
+            const bhopal = { lat: 23.2599, lng: 77.4126 };
+
+            const map = new google.maps.Map(document.querySelector("#cabifyMap"), {
+                center: bhopal,
+                zoom: 13,
+                disableDefaultUI: true,
+                zoomControl: true,
+                styles: [
+                    { elementType: "geometry", stylers: [{ color: "#18212e" }] },
+                    { elementType: "labels.text.fill", stylers: [{ color: "#d7e1ee" }] },
+                    { elementType: "labels.text.stroke", stylers: [{ color: "#101722" }] },
+                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#283548" }] },
+                    { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#111827" }] },
+                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e7490" }] },
+                    { featureType: "poi", elementType: "geometry", stylers: [{ color: "#1f2937" }] }
+                ]
+            });
+
+            new google.maps.Marker({
+                position: bhopal,
+                map,
+                title: "Bhopal pickup area"
+            });
+
+            mapPanel.classList.add("ready");
+        };
+
+        function loadGoogleMap() {
+            if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === "YOUR_GOOGLE_MAPS_API_KEY") {
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&loading=async&callback=initCabifyMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+
+        loadGoogleMap();
+    </script>
+</body>
+</html>

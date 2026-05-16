@@ -373,7 +373,7 @@
                         <p>Login with your mobile number or email address.</p>
                     </div>
 
-                    <form>
+                    <form id="loginForm">
                         <label>
                             Mobile number or email
                             <input type="text" name="login-id" placeholder="9876543210 or name@email.com" autocomplete="username" required>
@@ -448,6 +448,7 @@
         const signupSection = document.querySelector("#signupSection");
         const showSignup = document.querySelector("#showSignup");
         const showLogin = document.querySelector("#showLogin");
+        const loginForm = document.querySelector("#loginForm");
 
         function showAuthSection(section) {
             const isSignup = section === "signup";
@@ -458,7 +459,16 @@
         showSignup.addEventListener("click", () => showAuthSection("signup"));
         showLogin.addEventListener("click", () => showAuthSection("login"));
 
+        loginForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            window.location.href = "mainpage.html";
+        });
+
         document.querySelectorAll("form").forEach((form) => {
+            if (form === loginForm) {
+                return;
+            }
+
             form.addEventListener("submit", (event) => {
                 event.preventDefault();
             });
