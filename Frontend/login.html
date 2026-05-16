@@ -3,14 +3,466 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cabify Login</title>
+    <style>
+        :root {
+            --bg: #0c1017;
+            --panel: #141a24;
+            --panel-strong: #1b2330;
+            --text: #f4f7fb;
+            --muted: #9ca8ba;
+            --line: #2a3546;
+            --accent: #38bdf8;
+            --accent-strong: #0ea5e9;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 32rem),
+                linear-gradient(135deg, #090d13 0%, var(--bg) 50%, #111827 100%);
+        }
+
+        main {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 32px 18px;
+        }
+
+        .auth-shell {
+            width: min(980px, 100%);
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            background: rgba(20, 26, 36, 0.92);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 38px;
+            padding: 42px;
+            background:
+                linear-gradient(160deg, rgba(14, 165, 233, 0.28), rgba(20, 26, 36, 0.8)),
+                var(--panel-strong);
+        }
+
+        .brand-mark {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            color: #051018;
+            background: var(--accent);
+        }
+
+        .brand-mark svg {
+            width: 34px;
+            height: 34px;
+            display: block;
+        }
+
+        .brand-panel h1 {
+            margin: 22px 0 12px;
+            font-size: clamp(2rem, 4vw, 3.8rem);
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .brand-panel p {
+            max-width: 31rem;
+            margin: 0;
+            color: #d7e1ee;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .trust-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .trust-card {
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .trust-card strong {
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .trust-card span {
+            display: block;
+            margin-top: 4px;
+            color: #bfccdb;
+            font-size: 0.78rem;
+            line-height: 1.35;
+        }
+
+        .form-panel {
+            padding: 42px;
+        }
+
+        .section-heading {
+            margin-bottom: 28px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 8px;
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            letter-spacing: 0;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .auth-section {
+            display: none;
+        }
+
+        .auth-section.active {
+            display: block;
+        }
+
+        form {
+            display: grid;
+            gap: 18px;
+        }
+
+        label {
+            display: grid;
+            gap: 8px;
+            color: #d9e3ef;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 50px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 0 14px;
+            color: var(--text);
+            background: #0f141d;
+            font: inherit;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+        }
+
+        select {
+            appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+                linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+            background-position: calc(100% - 18px) 22px, calc(100% - 12px) 22px;
+            background-size: 6px 6px, 6px 6px;
+            background-repeat: no-repeat;
+        }
+
+        .primary-btn,
+        .ghost-btn,
+        .social-btn,
+        .link-btn {
+            min-height: 50px;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 800;
+        }
+
+        .primary-btn {
+            color: #06121d;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        }
+
+        .ghost-btn {
+            width: 100%;
+            color: var(--text);
+            border: 1px solid var(--line);
+            background: transparent;
+        }
+
+        .link-btn {
+            min-height: auto;
+            padding: 0;
+            color: var(--accent);
+            background: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: var(--line);
+        }
+
+        .signup-panel {
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(15, 20, 29, 0.78);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .social-stack {
+            display: grid;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--text);
+            border: 1px solid var(--line);
+            background: #0f141d;
+        }
+
+        .social-icon {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #071018;
+            background: #ffffff;
+            font-weight: 900;
+        }
+
+        .hint,
+        .switch-text {
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+
+        .switch-text {
+            margin: 20px 0 0;
+            text-align: center;
+        }
+
+        .form-note {
+            margin: 0 0 18px;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        @media (max-width: 820px) {
+            .auth-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel,
+            .form-panel {
+                padding: 30px;
+            }
+
+            .brand-panel {
+                gap: 26px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            main {
+                padding: 0;
+            }
+
+            .auth-shell {
+                min-height: 100vh;
+                border: 0;
+                border-radius: 0;
+            }
+
+            .brand-panel,
+            .form-panel {
+                padding: 24px 18px;
+            }
+
+            .trust-row,
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-mark {
+                width: 46px;
+                height: 46px;
+                border-radius: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <p>here is the frontend files 
+    <main>
+        <section class="auth-shell" aria-label="Cabify authentication">
+            <aside class="brand-panel">
+                <div>
+                    <div class="brand-mark" aria-label="Cabify car logo">
+                        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                            <path fill="currentColor" d="M16 29l5.1-12.2A8 8 0 0 1 28.5 12h7a8 8 0 0 1 7.4 4.8L48 29h3a5 5 0 0 1 5 5v12a3 3 0 0 1-3 3h-3.4a7 7 0 0 1-13.2 0h-8.8a7 7 0 0 1-13.2 0H11a3 3 0 0 1-3-3V34a5 5 0 0 1 5-5h3Zm6.5 0h19L38.8 20a4 4 0 0 0-3.8-2.8h-6a4 4 0 0 0-3.7 2.7L22.5 29ZM21 52a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm22 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14 37.5c0 1.4 1.1 2.5 2.5 2.5h5a2.5 2.5 0 0 0 0-5h-5a2.5 2.5 0 0 0-2.5 2.5Zm28 0c0 1.4 1.1 2.5 2.5 2.5h3a2.5 2.5 0 0 0 0-5h-3a2.5 2.5 0 0 0-2.5 2.5Z"/>
+                        </svg>
+                    </div>
+                    <h1>Cabify</h1>
+                    <p>Book reliable rides, save money , and keep every trip moving with partners from one clean dashboard.</p>
+                </div>
 
-        </p>
-        <h1>carbify the partner app </h1>
-    </div>
+                <div class="trust-row" aria-label="Service highlights">
+                    <div class="trust-card">
+                        <strong>Less expensive</strong>
+                        <span>Platform</span>
+                    </div>
+                    <div class="trust-card">
+                        <strong>24/7</strong>
+                        <span>Ride support</span>
+                    </div>
+                    <div class="trust-card">
+                        <strong>Secure</strong>
+                        <span>Verified access</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="form-panel">
+                <div id="loginSection" class="auth-section active">
+                    <div class="section-heading">
+                        <h2>Welcome back</h2>
+                        <p>Login with your mobile number or email address.</p>
+                    </div>
+
+                    <form>
+                        <label>
+                            Mobile number or email
+                            <input type="text" name="login-id" placeholder="9876543210 or name@email.com" autocomplete="username" required>
+                        </label>
+
+                        <button class="primary-btn" type="submit">Continue</button>
+                    </form>
+
+                    <div class="divider">or</div>
+                    <button id="showSignup" class="ghost-btn" type="button">New user? Create an account</button>
+                </div>
+
+                <div id="signupSection" class="auth-section">
+                    <div class="section-heading">
+                        <h2>Create account</h2>
+                        <p>Fill your details, or continue with Google, Apple ID, or Microsoft.</p>
+                    </div>
+
+                    <div class="signup-panel">
+                        <p class="form-note">Enter your details to create your Cabify account.</p>
+                        <form>
+                            <div class="two-column">
+                                <label>
+                                    Mobile number
+                                    <input type="tel" name="mobile" placeholder="9876543210" autocomplete="tel" required>
+                                </label>
+                                <label>
+                                    Full name
+                                    <input type="text" name="name" placeholder="Your name" autocomplete="name" required>
+                                </label>
+                            </div>
+
+                            <div class="two-column">
+                                <label>
+                                    Gender
+                                    <select name="gender" required>
+                                        <option value="">Select gender</option>
+                                        <option>Female</option>
+                                        <option>Male</option>
+                                        <option>Non-binary</option>
+                                        <option>Prefer not to say</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    Email
+                                    <input type="email" name="email" placeholder="name@email.com" autocomplete="email" required>
+                                </label>
+                            </div>
+
+                            <button class="primary-btn" type="submit">Create account</button>
+                        </form>
+
+                        <div class="divider">or</div>
+                        <div class="social-stack">
+                            <button class="social-btn" type="button"><span class="social-icon">G</span> Continue with Google</button>
+                            <button class="social-btn" type="button"><span class="social-icon">A</span> Continue with Apple ID</button>
+                            <button class="social-btn" type="button"><span class="social-icon">M</span> Continue with Microsoft</button>
+                        </div>
+                    </div>
+
+                    <p class="switch-text">
+                        Already have an account?
+                        <button id="showLogin" class="link-btn" type="button">Back to login</button>
+                    </p>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const loginSection = document.querySelector("#loginSection");
+        const signupSection = document.querySelector("#signupSection");
+        const showSignup = document.querySelector("#showSignup");
+        const showLogin = document.querySelector("#showLogin");
+
+        function showAuthSection(section) {
+            const isSignup = section === "signup";
+            loginSection.classList.toggle("active", !isSignup);
+            signupSection.classList.toggle("active", isSignup);
+        }
+
+        showSignup.addEventListener("click", () => showAuthSection("signup"));
+        showLogin.addEventListener("click", () => showAuthSection("login"));
+
+        document.querySelectorAll("form").forEach((form) => {
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+            });
+        });
+    </script>
 </body>
 </html>
