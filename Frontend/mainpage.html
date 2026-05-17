@@ -10,8 +10,8 @@
             --panel: #141a24;
             --panel-soft: rgba(20, 26, 36, 0.9);
             --line: #2a3546;
-            --text: #f4f7fb;
-            --muted: #9ca8ba;
+            --text: #ffffff;
+            --muted: #d5deea;
             --accent: #38bdf8;
             --accent-strong: #0ea5e9;
             --surface: #101722;
@@ -300,12 +300,14 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
             cursor: pointer;
             backdrop-filter: blur(12px);
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
 
         .branch-card:hover,
         .branch-card.active {
             border-color: rgba(56, 189, 248, 0.62);
             background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(255, 255, 255, 0.06));
+            transform: translateY(-2px);
         }
 
         .branch-card strong {
@@ -324,7 +326,10 @@
             padding: 18px;
             border: 1px solid rgba(255, 255, 255, 0.14);
             border-radius: 12px;
-            background: rgba(16, 23, 34, 0.78);
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+                rgba(16, 23, 34, 0.82);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(14px);
         }
 
@@ -382,10 +387,12 @@
             color: var(--text);
             background: rgba(12, 16, 23, 0.72);
             outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
         .location-field input:focus {
             border-color: rgba(34, 197, 94, 0.78);
+            background: rgba(12, 16, 23, 0.92);
             box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
         }
 
@@ -436,7 +443,6 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-        }
         }
 
         .section-title {
@@ -508,6 +514,12 @@
             display: grid;
             gap: 12px;
             padding: 16px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .ride-card:hover {
+            border-color: rgba(56, 189, 248, 0.55);
+            transform: translateY(-2px);
         }
 
         .ride-main {
@@ -612,6 +624,21 @@
             color: var(--muted);
             text-align: center;
             line-height: 1.55;
+        }
+
+        .host-upcoming-card {
+            display: grid;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            color: var(--text);
+            text-decoration: none;
+            background: var(--surface);
+        }
+
+        .host-upcoming-card:hover {
+            border-color: rgba(56, 189, 248, 0.62);
         }
 
         .overview-grid {
@@ -893,11 +920,22 @@
                 <section class="upcoming-rides">
                     <div class="section-title">
                         <h3>Upcoming rides</h3>
-                        <span>Updated later</span>
+                        <span>Host view</span>
                     </div>
-                    <div class="upcoming-empty">
-                        No rides yet. Your booked and hosted rides will appear here when they are updated.
-                    </div>
+                    <a class="host-upcoming-card" href="hostRideRequests.html">
+                        <div class="ride-main">
+                            <div>
+                                <strong>Your hosted route</strong>
+                                <span>Bhopal pickup route requests</span>
+                            </div>
+                            <div class="ride-price">Open</div>
+                        </div>
+                        <div class="ride-meta">
+                            <span>See user requests</span>
+                            <span>Accept or reject riders</span>
+                            <span>Initialise ride</span>
+                        </div>
+                    </a>
                 </section>
             </aside>
 

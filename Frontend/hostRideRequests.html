@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabify Host Requests</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cabDark: "#0c1017",
+                        cabPanel: "rgba(20, 26, 36, 0.86)",
+                        cabLine: "#2a3546",
+                        cabAccent: "#38bdf8"
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        .text-slate-100 {
+            color: #ffffff !important;
+        }
+
+        .text-slate-300,
+        .text-slate-400 {
+            color: #d5deea !important;
+        }
+
+        .text-emerald-200,
+        .text-sky-200,
+        .text-rose-100,
+        .text-rose-200 {
+            color: #f8fbff !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-cabDark text-slate-100">
+    <div id="hostRequestApp"></div>
+
+    <script type="text/babel">
+        const initialRequests = [
+            {
+                id: 1,
+                name: "Arjun Mehra",
+                pickup: "Boat Club",
+                drop: "MP Nagar Zone 2",
+                seats: 1,
+                share: 90,
+                status: "pending"
+            },
+            {
+                id: 2,
+                name: "Sana Khan",
+                pickup: "New Market",
+                drop: "DB Mall",
+                seats: 2,
+                share: 140,
+                status: "pending"
+            },
+            {
+                id: 3,
+                name: "Nisha Patel",
+                pickup: "Danish Kunj",
+                drop: "Habibganj",
+                seats: 1,
+                share: 80,
+                status: "pending"
+            }
+        ];
+
+        function HostRequestApp() {
+            const [requests, setRequests] = React.useState(initialRequests);
+            const accepted = requests.filter((request) => request.status === "accepted");
+            const pending = requests.filter((request) => request.status === "pending");
+            const rejected = requests.filter((request) => request.status === "rejected");
+            const collection = accepted.reduce((total, request) => total + request.share, 0);
+
+            function updateRequest(id, status) {
+                setRequests((current) =>
+                    current.map((request) =>
+                        request.id === id ? { ...request, status } : request
+                    )
+                );
+            }
+
+            function initials(name) {
+                return name
+                    .split(" ")
+                    .map((part) => part[0])
+                    .join("")
+                    .slice(0, 2);
+            }
+
+            return (
+                <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.16),transparent_34rem),linear-gradient(135deg,#090d13,#0c1017_55%,#111827)] px-4 py-5 sm:px-8">
+                    <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 shadow-2xl shadow-black/30 backdrop-blur-xl">
+                        <a href="mainpage.html" className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-cabAccent transition hover:bg-white/15">Back to main page</a>
+                        <div className="text-right">
+                            <p className="text-sm text-slate-400">Hosted route</p>
+                            <h1 className="text-xl font-black tracking-normal sm:text-2xl">Bhopal route requests</h1>
+                        </div>
+                    </header>
+
+                    <section className="mx-auto mt-5 grid max-w-6xl gap-3 sm:grid-cols-3">
+                        <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
+                            <p className="text-sm text-slate-400">Pending</p>
+                            <strong className="mt-1 block text-3xl font-black">{pending.length}</strong>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
+                            <p className="text-sm text-slate-400">Accepted riders</p>
+                            <strong className="mt-1 block text-3xl font-black">{accepted.length}</strong>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
+                            <p className="text-sm text-slate-400">Collection</p>
+                            <strong className="mt-1 block text-3xl font-black">Rs {collection}</strong>
+                        </div>
+                    </section>
+
+                    <section className="mx-auto mt-5 grid max-w-6xl gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+                        <section className="rounded-2xl border border-white/10 bg-cabPanel p-5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+                            <div className="flex flex-wrap items-end justify-between gap-3">
+                                <div>
+                                    <p className="text-sm font-bold text-cabAccent">New user requests</p>
+                                    <h2 className="mt-1 text-2xl font-black">Accept or reject riders</h2>
+                                </div>
+                                <span className="rounded-full border border-cabLine px-3 py-1 text-sm text-slate-300">{pending.length} pending</span>
+                            </div>
+
+                            <div className="mt-5 grid gap-3">
+                                {requests.map((request) => (
+                                    <article key={request.id} className="rounded-xl border border-cabLine bg-[#101722]/90 p-4 transition hover:-translate-y-0.5 hover:border-sky-300/50">
+                                        <div className="flex flex-wrap items-start justify-between gap-4">
+                                            <div className="flex gap-3">
+                                                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-gradient-to-br from-sky-300 to-emerald-300 font-black text-slate-950">
+                                                    {initials(request.name)}
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-black">{request.name}</h3>
+                                                    <p className="mt-1 text-sm text-slate-400">{request.pickup} to {request.drop}</p>
+                                                    <div className="mt-3 flex items-center gap-2 text-xs text-slate-400">
+                                                        <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+                                                        <span>{request.pickup}</span>
+                                                        <span className="h-px w-8 bg-cabLine"></span>
+                                                        <span className="h-2 w-2 rounded-full bg-sky-400"></span>
+                                                        <span>{request.drop}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex min-w-[150px] flex-col items-start gap-3 sm:items-end">
+                                                <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-slate-300">
+                                                    <span className="rounded-full bg-white/10 px-3 py-1">{request.seats} seat{request.seats > 1 ? "s" : ""}</span>
+                                                    <span className="rounded-full bg-white/10 px-3 py-1">Share Rs {request.share}</span>
+                                                    <span className={`rounded-full px-3 py-1 ${request.status === "accepted" ? "bg-emerald-500/20 text-emerald-200" : request.status === "rejected" ? "bg-rose-500/20 text-rose-200" : "bg-sky-500/20 text-sky-200"}`}>
+                                                        {request.status}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateRequest(request.id, "accepted")}
+                                                        className="min-h-10 rounded-lg bg-emerald-400 px-4 text-sm font-black text-slate-950 transition hover:bg-emerald-300"
+                                                    >
+                                                        Accept
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateRequest(request.id, "rejected")}
+                                                        className="min-h-10 rounded-lg border border-rose-300/30 bg-rose-500/12 px-4 text-sm font-black text-rose-100 transition hover:bg-rose-500/20"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        </section>
+
+                        <aside className="grid content-start gap-5 lg:sticky lg:top-5">
+                            <section className="rounded-2xl border border-white/10 bg-cabPanel p-5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+                                <p className="text-sm font-bold text-cabAccent">Collection share</p>
+                                <div className="mt-3 rounded-xl border border-cabLine bg-[#101722]/90 p-5">
+                                    <p className="text-sm text-slate-400">Accepted riders total</p>
+                                    <strong className="mt-1 block text-4xl font-black">Rs {collection}</strong>
+                                    <p className="mt-2 text-sm text-slate-400">{accepted.length} accepted, {rejected.length} rejected</p>
+                                </div>
+                            </section>
+
+                            <section className="rounded-2xl border border-white/10 bg-cabPanel p-5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+                                <div className="flex items-center justify-between gap-3">
+                                    <h2 className="text-lg font-black">Accepted users</h2>
+                                    <span className="text-sm text-slate-400">{accepted.length} riders</span>
+                                </div>
+
+                                <div className="mt-4 grid gap-3">
+                                    {accepted.length === 0 ? (
+                                        <p className="rounded-xl border border-cabLine bg-[#101722]/90 p-4 text-sm text-slate-400">No users accepted yet.</p>
+                                    ) : (
+                                        accepted.map((request) => (
+                                            <div key={request.id} className="flex gap-3 rounded-xl border border-cabLine bg-[#101722]/90 p-4">
+                                                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-300 font-black text-slate-950">{initials(request.name)}</div>
+                                                <div>
+                                                    <strong>{request.name}</strong>
+                                                    <p className="mt-1 text-sm text-slate-400">{request.pickup} to {request.drop}</p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </section>
+
+                            <button
+                                type="button"
+                                disabled={accepted.length === 0}
+                                className="min-h-14 rounded-xl bg-gradient-to-br from-sky-300 to-sky-500 px-5 font-black text-slate-950 shadow-xl shadow-sky-500/20 transition enabled:hover:from-sky-200 disabled:cursor-not-allowed disabled:opacity-45"
+                            >
+                                Initialise ride
+                            </button>
+                        </aside>
+                    </section>
+                </main>
+            );
+        }
+
+        ReactDOM.createRoot(document.querySelector("#hostRequestApp")).render(<HostRequestApp />);
+    </script>
+</body>
+</html>

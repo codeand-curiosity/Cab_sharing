@@ -11,6 +11,7 @@ function initWhereToGoFlow() {
     const addStop = document.querySelector("#addStop");
     const mapPlaceholder = document.querySelector("#mapPlaceholder");
     let stopCount = 0;
+    let selectedRideMode = "";
 
     if (!whereToGo || !rideSections || !routeForm) {
         return;
@@ -24,6 +25,7 @@ function initWhereToGoFlow() {
     branchCards.forEach((card) => {
         card.addEventListener("click", () => {
             const mode = card.dataset.rideMode;
+            selectedRideMode = mode;
             branchCards.forEach((item) => item.classList.toggle("active", item === card));
             routeForm.classList.add("active");
             runningRides.classList.toggle("active", mode === "join");
@@ -89,6 +91,10 @@ function initWhereToGoFlow() {
 
     routeForm.addEventListener("submit", (event) => {
         event.preventDefault();
+
+        if (selectedRideMode === "host") {
+            window.location.href = "hostRideRequests.html";
+        }
     });
 }
 
