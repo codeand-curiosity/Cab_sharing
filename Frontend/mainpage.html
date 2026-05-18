@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabify Main</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIINfQXVUK3k9gTk0+OrjXUuT2zT9E3F3MQ=" crossorigin="">
     <style>
         :root {
             --bg: #0c1017;
@@ -510,6 +512,128 @@
             animation: slideIn 0.28s ease forwards;
         }
 
+        .flow-dashboard {
+            display: none;
+            gap: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            background: rgba(16, 23, 34, 0.88);
+            animation: slideIn 0.28s ease forwards;
+        }
+
+        .flow-dashboard.active {
+            display: grid;
+        }
+
+        .flow-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .flow-tab {
+            min-height: 44px;
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .flow-tab.active {
+            color: #06121d;
+            border-color: transparent;
+            background: var(--accent);
+        }
+
+        .flow-pane {
+            display: none;
+            gap: 12px;
+        }
+
+        .flow-pane.active {
+            display: grid;
+            animation: slideIn 0.24s ease forwards;
+        }
+
+        .flow-card,
+        .user-row {
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface);
+        }
+
+        .flow-card strong,
+        .user-row strong {
+            display: block;
+        }
+
+        .flow-card span,
+        .user-row span {
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.45;
+        }
+
+        .flow-kpis {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .flow-kpi {
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .flow-kpi strong {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .route-line {
+            display: grid;
+            gap: 8px;
+        }
+
+        .route-point {
+            display: grid;
+            grid-template-columns: 12px 1fr;
+            gap: 10px;
+            align-items: start;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .route-dot {
+            width: 10px;
+            height: 10px;
+            margin-top: 4px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.12);
+        }
+
+        .route-dot.drop {
+            background: var(--accent);
+            box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.12);
+        }
+
+        .flow-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .ride-card {
             display: grid;
             gap: 12px;
@@ -729,6 +853,11 @@
                 grid-template-columns: 1fr;
             }
 
+            .flow-tabs,
+            .flow-kpis {
+                grid-template-columns: 1fr;
+            }
+
             .map-panel,
             #cabifyMap {
                 min-height: 300px;
@@ -874,7 +1003,7 @@
 
                         <div class="form-submit-row">
                             <button id="routeSubmit" class="secondary-btn" type="submit">Continue</button>
-                            <span class="ride-meta">Manual addresses can later connect with Google Places API.</span>
+                            <span class="ride-meta">Click the OpenStreetMap view to save precise pickup and drop coordinates.</span>
                         </div>
                     </form>
 
@@ -945,7 +1074,7 @@
                     <div id="mapPlaceholder" class="map-placeholder">
                         <div>
                             <strong>Map view</strong>
-                            <span>Add your Google Maps API key in the script to show nearby routes and pickup points here.</span>
+                            <span>OpenStreetMap and Leaflet are ready here. Choose a field, then click the map.</span>
                         </div>
                     </div>
                 </section>
@@ -968,52 +1097,9 @@
         </section>
     </main>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="leafletMap.js"></script>
     <script src="whereToGoFlow.js"></script>
-    <script>
-        const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-
-        window.initCabifyMap = function initCabifyMap() {
-            const mapPanel = document.querySelector("#mapPanel");
-            const bhopal = { lat: 23.2599, lng: 77.4126 };
-
-            const map = new google.maps.Map(document.querySelector("#cabifyMap"), {
-                center: bhopal,
-                zoom: 13,
-                disableDefaultUI: true,
-                zoomControl: true,
-                styles: [
-                    { elementType: "geometry", stylers: [{ color: "#18212e" }] },
-                    { elementType: "labels.text.fill", stylers: [{ color: "#d7e1ee" }] },
-                    { elementType: "labels.text.stroke", stylers: [{ color: "#101722" }] },
-                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#283548" }] },
-                    { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#111827" }] },
-                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e7490" }] },
-                    { featureType: "poi", elementType: "geometry", stylers: [{ color: "#1f2937" }] }
-                ]
-            });
-
-            new google.maps.Marker({
-                position: bhopal,
-                map,
-                title: "Bhopal pickup area"
-            });
-
-            mapPanel.classList.add("ready");
-        };
-
-        function loadGoogleMap() {
-            if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === "YOUR_GOOGLE_MAPS_API_KEY") {
-                return;
-            }
-
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&loading=async&callback=initCabifyMap`;
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-        }
-
-        loadGoogleMap();
-    </script>
 </body>
 </html>
