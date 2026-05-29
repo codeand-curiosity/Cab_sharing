@@ -448,7 +448,7 @@ function initWhereToGoFlow() {
             if (mode === "host") {
                 routeFormTitle.textContent = "Host your ride";
                 routeFormHint.textContent = "Add pickup, optional stops, and drop location so riders can request your route.";
-                routeSubmit.textContent = "Publish route";
+                routeSubmit.textContent = "Publish ride";
                 scheduleRide?.classList.add("active");
                 return;
             }
@@ -531,6 +531,7 @@ function initWhereToGoFlow() {
         routeForm.classList.remove("active");
         hideDashboards();
         renderScheduledRide();
+        scheduledRideList?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     });
 
 }

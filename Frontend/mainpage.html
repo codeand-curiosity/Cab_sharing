@@ -440,11 +440,16 @@
         }
 
         .form-submit-row {
-            display: flex;
+            display: grid;
             gap: 12px;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
+        }
+
+        .schedule-ride-btn {
+            display: none;
+        }
+
+        .schedule-ride-btn.active {
+            display: block;
         }
 
         .section-title {
@@ -740,6 +745,12 @@
             border-top: 1px solid var(--line);
         }
 
+        .upcoming-rides > div:not(.section-title):not(:empty) {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
         .upcoming-empty {
             display: grid;
             place-items: center;
@@ -1003,6 +1014,7 @@
 
                         <div class="form-submit-row">
                             <button id="routeSubmit" class="secondary-btn" type="submit">Continue</button>
+                            <button id="scheduleRide" class="secondary-btn schedule-ride-btn" type="button">Schedule ride</button>
                             <span class="ride-meta">Click the OpenStreetMap view to save precise pickup and drop coordinates.</span>
                         </div>
                     </form>
@@ -1051,6 +1063,8 @@
                         <h3>Upcoming rides</h3>
                         <span>Host view</span>
                     </div>
+                    <div id="publishedRideList"></div>
+                    <div id="scheduledRideList"></div>
                     <a class="host-upcoming-card" href="hostRideRequests.html">
                         <div class="ride-main">
                             <div>
