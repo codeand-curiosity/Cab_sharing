@@ -440,20 +440,11 @@
         }
 
         .form-submit-row {
-            display: grid;
-            gap: 10px;
-        }
-
-        .host-action-btn {
-            width: 100%;
-        }
-
-        .schedule-ride-btn {
-            display: none;
-        }
-
-        .schedule-ride-btn.active {
-            display: block;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
 
         .section-title {
@@ -688,15 +679,12 @@
         .content-side {
             display: grid;
             gap: 22px;
-            align-self: start;
             align-content: start;
         }
 
         .map-panel {
             min-height: 440px;
-            height: min(64vh, 560px);
-            position: sticky;
-            top: 18px;
+            position: relative;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 14px;
@@ -710,84 +698,6 @@
             height: 100%;
             min-height: 440px;
             opacity: 0.82;
-        }
-
-        .static-map {
-            width: 100%;
-            height: 100%;
-            min-height: inherit;
-            position: relative;
-            overflow: hidden;
-            cursor: crosshair;
-            background:
-                radial-gradient(circle at 32% 26%, rgba(56, 189, 248, 0.28), transparent 9rem),
-                radial-gradient(circle at 72% 68%, rgba(34, 197, 94, 0.22), transparent 8rem),
-                linear-gradient(135deg, #142235 0%, #0d1826 52%, #172232 100%);
-        }
-
-        .static-map-image {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            inset: 0;
-            object-fit: cover;
-            object-position: center;
-            opacity: 1;
-        }
-
-        .static-map::before {
-            content: none;
-            position: absolute;
-            inset: -8%;
-            background:
-                linear-gradient(180deg, rgba(12, 16, 23, 0.02), rgba(12, 16, 23, 0.18)),
-                linear-gradient(32deg, transparent 0 44%, rgba(56, 189, 248, 0.32) 45% 47%, transparent 48% 100%),
-                linear-gradient(118deg, transparent 0 54%, rgba(255, 255, 255, 0.16) 55% 56%, transparent 57% 100%),
-                linear-gradient(72deg, transparent 0 62%, rgba(34, 197, 94, 0.22) 63% 65%, transparent 66% 100%);
-            background-size: 100% 100%;
-            transform: rotate(-3deg) scale(1.08);
-            opacity: 0.42;
-            pointer-events: none;
-        }
-
-        .static-map-pin {
-            width: 18px;
-            height: 18px;
-            position: absolute;
-            left: var(--pin-x, 50%);
-            top: var(--pin-y, 50%);
-            z-index: 1;
-            border: 3px solid #06121d;
-            border-radius: 999px 999px 999px 0;
-            background: var(--accent);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
-            transform: translate(-50%, -100%) rotate(-45deg);
-        }
-
-        .static-map-label {
-            position: absolute;
-            left: 22px;
-            bottom: 22px;
-            z-index: 1;
-            max-width: min(320px, calc(100% - 44px));
-            padding: 14px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            border-radius: 12px;
-            color: #d7e1ee;
-            background: rgba(12, 16, 23, 0.72);
-            backdrop-filter: blur(12px);
-        }
-
-        .static-map-label strong {
-            display: block;
-            margin-bottom: 5px;
-            color: var(--text);
-        }
-
-        .static-map-label span {
-            color: var(--muted);
-            font-size: 0.86rem;
-            line-height: 1.45;
         }
 
         .map-placeholder {
@@ -896,12 +806,6 @@
             .map-panel,
             #cabifyMap {
                 min-height: 340px;
-            }
-
-            .map-panel {
-                height: auto;
-                position: relative;
-                top: auto;
             }
         }
 
@@ -1098,8 +1002,7 @@
                         </label>
 
                         <div class="form-submit-row">
-                            <button id="routeSubmit" class="secondary-btn host-action-btn" type="submit">Continue</button>
-                            <button id="scheduleRide" class="secondary-btn host-action-btn schedule-ride-btn" type="button">Schedule the ride</button>
+                            <button id="routeSubmit" class="secondary-btn" type="submit">Continue</button>
                             <span class="ride-meta">Click the OpenStreetMap view to save precise pickup and drop coordinates.</span>
                         </div>
                     </form>
@@ -1148,8 +1051,6 @@
                         <h3>Upcoming rides</h3>
                         <span>Host view</span>
                     </div>
-                    <div id="publishedRideList"></div>
-                    <div id="scheduledRideList"></div>
                     <a class="host-upcoming-card" href="hostRideRequests.html">
                         <div class="ride-main">
                             <div>
@@ -1195,10 +1096,18 @@
             </section>
         </section>
     </main>
+    
+    <!-- <script src="script.js"></script> -->
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="leafletMap.js"></script>
+    <script src="googleMap.js"></script>
+
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrzp5lGjTQNNnZVcWscKrAXbIcdfJpovs&callback=initMap"
+    async
+    defer>
+</script>
+
+
     <script src="whereToGoFlow.js"></script>
 </body>
 </html>
