@@ -11,6 +11,7 @@ function initWhereToGoFlow() {
     const stopsList = document.querySelector("#stopsList");
     const addStop = document.querySelector("#addStop");
     const mapPlaceholder = document.querySelector("#mapPlaceholder");
+    const publishedRideList = document.querySelector("#publishedRideList");
     const scheduledRideList = document.querySelector("#scheduledRideList");
     let stopCount = 0;
     let selectedRideMode = "";
@@ -165,6 +166,34 @@ function initWhereToGoFlow() {
                 </div>
                 <div class="ride-meta">
                     <span>See scheduled ride requests</span>
+                    <span>Accept or reject riders</span>
+                    <span>${stopText}</span>
+                </div>
+            </a>
+        `;
+    }
+
+    function renderPublishedRide() {
+        if (!publishedRideList) {
+            return;
+        }
+
+        const route = routeData();
+        const stopText = route.stops.length > 0
+            ? `${route.stops.length} stop${route.stops.length === 1 ? "" : "s"} added`
+            : "Direct ride";
+
+        publishedRideList.innerHTML = `
+            <a class="host-upcoming-card" href="hostRideRequests.html">
+                <div class="ride-main">
+                    <div>
+                        <strong>Your published route</strong>
+                        <span>${route.pickup} to ${route.drop}</span>
+                    </div>
+                    <div class="ride-price">Open</div>
+                </div>
+                <div class="ride-meta">
+                    <span>See user requests</span>
                     <span>Accept or reject riders</span>
                     <span>${stopText}</span>
                 </div>
@@ -480,7 +509,8 @@ function initWhereToGoFlow() {
             runningRides.classList.remove("active");
             routeForm.classList.remove("active");
             hideDashboards();
-            renderHostDashboard();
+            renderPublishedRide();
+            publishedRideList?.scrollIntoView({ behavior: "smooth", block: "nearest" });
             return;
         }
 

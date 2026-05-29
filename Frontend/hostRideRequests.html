@@ -52,6 +52,8 @@
                 drop: "MP Nagar Zone 2",
                 seats: 1,
                 share: 90,
+                gender: "male",
+                rating: 4.4,
                 status: "pending"
             },
             {
@@ -61,6 +63,8 @@
                 drop: "DB Mall",
                 seats: 2,
                 share: 140,
+                gender: "female",
+                rating: 4.8,
                 status: "pending"
             },
             {
@@ -70,18 +74,46 @@
                 drop: "Habibganj",
                 seats: 1,
                 share: 80,
+                gender: "female",
+                rating: 4.6,
+                status: "pending"
+            },
+            {
+                id: 4,
+                name: "Rohit Sahu",
+                pickup: "BHEL Gate",
+                drop: "DB Mall",
+                seats: 1,
+                share: 75,
+                gender: "male",
+                rating: 2.8,
+                status: "pending"
+            },
+            {
+                id: 5,
+                name: "Manav Jain",
+                pickup: "10 No. Market",
+                drop: "New Market",
+                seats: 1,
+                share: 65,
+                gender: "male",
+                rating: 2.6,
                 status: "pending"
             }
         ];
 
         function HostRequestApp() {
             const [requests, setRequests] = React.useState(initialRequests);
+            const [pinkRiderOnly, setPinkRiderOnly] = React.useState(false);
             const [rideInitialised, setRideInitialised] = React.useState(false);
             const [rideCompleted, setRideCompleted] = React.useState(false);
             const [hostRating, setHostRating] = React.useState(0);
             const [userRating, setUserRating] = React.useState(0);
+            const visibleRequests = pinkRiderOnly
+                ? requests.filter((request) => request.gender === "female" || (request.gender === "male" && request.rating > 3))
+                : requests;
             const accepted = requests.filter((request) => request.status === "accepted");
-            const pending = requests.filter((request) => request.status === "pending");
+            const pending = visibleRequests.filter((request) => request.status === "pending");
             const rejected = requests.filter((request) => request.status === "rejected");
             const collection = accepted.reduce((total, request) => total + request.share, 0);
             const activeRoute = {
@@ -108,6 +140,10 @@
                     .map((part) => part[0])
                     .join("")
                     .slice(0, 2);
+            }
+
+            function starText(rating) {
+                return `${rating.toFixed(1)} stars`;
             }
 
             function RatingStars({ label, value, onChange }) {
@@ -162,7 +198,7 @@
                             <div className="flex flex-wrap items-start justify-between gap-4">
                                 <div>
                                     <p className="text-sm font-bold text-cabAccent">{rideCompleted ? "Ride completed" : "Ride live"}</p>
-                                    <h2 className="mt-1 text-3xl font-black">Current route slide</h2>
+                                    <h2 className="mt-1 text-3xl font-black">Current route </h2>
                                     <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
                                         Track the host route, accepted users, next stop, remaining distance, and ride completion from one place.
                                     </p>
@@ -221,9 +257,12 @@
                                                         <div>
                                                             <strong>{request.name}</strong>
                                                             <p className="text-sm text-slate-400">{request.pickup} to {request.drop}</p>
+                                                            <p className="text-xs font-bold text-amber-200">{starText(request.rating)} · {request.gender}</p>
                                                         </div>
                                                     </div>
-                                                    <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-200">On route</span>
+                                                    <span className={`rounded-full px-3 py-1 text-xs font-bold ${rideCompleted ? "bg-sky-400/15 text-sky-200" : "bg-emerald-400/15 text-emerald-200"}`}>
+                                                        {rideCompleted ? "Complete" : "On route"}
+                                                    </span>
                                                 </div>
                                             ))
                                         )}
@@ -252,12 +291,24 @@
                                 <div>
                                     <p className="text-sm font-bold text-cabAccent">New user requests</p>
                                     <h2 className="mt-1 text-2xl font-black">Accept or reject riders</h2>
+                                    <p className="mt-2 text-sm text-slate-400">Pink rider shows female requests and male riders rated above 3 stars.</p>
                                 </div>
-                                <span className="rounded-full border border-cabLine px-3 py-1 text-sm text-slate-300">{pending.length} pending</span>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setPinkRiderOnly((current) => !current)}
+                                        className={`rounded-full border px-4 py-2 text-sm font-black transition ${pinkRiderOnly ? "border-pink-300 bg-pink-300 text-slate-950" : "border-cabLine bg-white/10 text-slate-100 hover:bg-white/15"}`}
+                                    >
+                                        Pink rider
+                                    </button>
+                                    <span className="rounded-full border border-cabLine px-3 py-1 text-sm text-slate-300">{pending.length} pending</span>
+                                </div>
                             </div>
 
                             <div className="mt-5 grid gap-3">
-                                {requests.map((request) => (
+                                {visibleRequests.length === 0 ? (
+                                    <p className="rounded-xl border border-cabLine bg-[#101722]/90 p-4 text-sm text-slate-400">No requests match the Pink rider filter.</p>
+                                ) : visibleRequests.map((request) => (
                                     <article key={request.id} className="rounded-xl border border-cabLine bg-[#101722]/90 p-4 transition hover:-translate-y-0.5 hover:border-sky-300/50">
                                         <div className="flex flex-wrap items-start justify-between gap-4">
                                             <div className="flex gap-3">
@@ -267,6 +318,7 @@
                                                 <div>
                                                     <h3 className="text-lg font-black">{request.name}</h3>
                                                     <p className="mt-1 text-sm text-slate-400">{request.pickup} to {request.drop}</p>
+                                                    <p className="mt-1 text-xs font-bold text-amber-200">{starText(request.rating)} · {request.gender}</p>
                                                     <div className="mt-3 flex items-center gap-2 text-xs text-slate-400">
                                                         <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
                                                         <span>{request.pickup}</span>
